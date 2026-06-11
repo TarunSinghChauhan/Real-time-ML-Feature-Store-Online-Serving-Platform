@@ -83,4 +83,4 @@ curl -X POST "http://localhost:8000/features/online" \
 The system automatically monitors for feature drift using **Population Stability Index (PSI)**. If more than 3 features show significant drift (PSI > 0.2), an automated retraining trigger is logged. Detailed reports are available in the Streamlit dashboard at `http://localhost:8501`.
 
 ---
-*Created by [Your Name] - Senior ML Engineer Portfolio Project*
+*Created by Tarun*
