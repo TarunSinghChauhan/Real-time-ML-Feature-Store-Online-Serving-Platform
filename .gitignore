@@ -1,0 +1,16 @@
+# Data and Artifacts
+data/*.csv
+training/models/
+feature_store/offline/
+mlflow.db
+mlruns/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual Environment
+venv/
+.env

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: feature_store_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  mlflow:
+    build: .
+    container_name: mlflow_server
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=sqlite:///mlflow.db
+    command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./artifacts --host 0.0.0.0 --port 5000
+    volumes:
+      - .:/app
+
+  serving_api:
+    build: .
+    container_name: serving_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    command: uvicorn serving.main:app --host 0.0.0.0 --port 8000
+
+  monitoring_dashboard:
+    build: .
+    container_name: monitoring_dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    command: streamlit run monitoring/dashboard.py --server.port 8501 --server.address 0.0.0.0
+
+  jupyter:
+    build: .
+    container_name: jupyter_notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+
+volumes:
+  redis_data:
